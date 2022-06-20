@@ -8,6 +8,10 @@ var hourlyRateEl = $('#hourly-rate');
 var dueDateEl = $('#due-date');
 var daysUntilEl = $('#days-until');
 
+window.setInterval(function () {
+  $('#time-display').html(moment().format('ddd DD/MM/y H:mm:ss'))
+}, 1000);
+
 var printSkills = function (name, type, rate, date, until) {
     var listEl = $('<li>');
     var listDetail = name.concat(type, rate, date, until);
@@ -39,6 +43,5 @@ var handleFormSubmit = function (event) {
 };
 
 formEl.on('submit', handleFormSubmit);
-window.setInterval(function () {
-  $('#time-display').html(moment().format('ddd DD/MM/y H:mm:ss'))
-}, 1000);
+
+
