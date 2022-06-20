@@ -3,7 +3,20 @@ body {
     color: rgb(32, 25, 95);
 }
 
-.custom-jumbotron {
+.custom-jumbotron,
+.custom-card .card-header,
+.custom-card .card-footer {
     background-color: rgb(32, 25, 95);
     color: aliceblue;
+}
+
+.custom-btn {
+    background-color: aliceblue;
+    color: rgb(32, 25, 95);
+}
+
+.custom-btn:hover {
+    background-color: lightskyblue;
+    color: rgb(32, 25, 95);
+;
 }
