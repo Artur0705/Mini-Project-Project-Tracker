@@ -39,3 +39,6 @@ var handleFormSubmit = function (event) {
 };
 
 formEl.on('submit', handleFormSubmit);
+window.setInterval(function () {
+  $('#time-display').html(moment().format('ddd DD/MM/y H:mm:ss'))
+}, 1000);
