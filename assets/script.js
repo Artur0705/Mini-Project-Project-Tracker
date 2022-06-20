@@ -1,47 +1,89 @@
-//Task 2: Capture Form Data
+// save reference to important DOM elements
+var timeDisplayEl = $('#time-display');
+var projectDisplayEl = $('#project-display');
+var projectModalEl = $('#project-modal');
+var projectFormEl = $('#project-form');
+var projectNameInputEl = $('#project-name-input');
+var projectTypeInputEl = $('#project-type-input');
+var hourlyRateInputEl = $('#hourly-rate-input');
+var dueDateInputEl = $('#due-date-input');
 
-//Select and save references to every DOM element we will interact with to a variable (i.e., below so that we can use these elements later.
-var projectFormEl = $("#project-form");
-var projectNameEl = $('#project-name');
-var projectTypeEl = $('#project-type');
-var hourlyRateEl = $('#hourly-rate');
-var dueDateEl = $('#due-date');
-var daysUntilEl = $('#days-until');
+// handle displaying the time
+function displayTime() {
+  var rightNow = moment().format('MMM DD, YYYY [at] hh:mm:ss a');
+  timeDisplayEl.text(rightNow);
+}
 
-window.setInterval(function () {
-  $('#time-display').html(moment().format('ddd DD/MM/y H:mm:ss'))
-}, 1000);
+// handle printing project data to the page
+function printProjectData(name, type, hourlyRate, dueDate) {
+  var projectRowEl = $('<tr>');
 
-var printSkills = function (name, type, rate, date, until) {
-    var listEl = $('<li>');
-    var listDetail = name.concat(type, rate, date, until);
-    listEl.addClass('list-group-item').text(listDetail);
-    listEl.appendTo(projectFormEl);
-  };
+  var projectNameTdEl = $('<td>').addClass('p-2').text(name);
 
-var handleFormSubmit = function (event) {
+  var projectTypeTdEl = $('<td>').addClass('p-2').text(type);
+
+  var rateTdEl = $('<td>').addClass('p-2').text(hourlyRate);
+
+  var dueDateTdEl = $('<td>').addClass('p-2').text(dueDate);
+
+  var daysToDate = moment(dueDate, 'MM/DD/YYYY').diff(moment(), 'days');
+  var daysLeftTdEl = $('<td>').addClass('p-2').text(daysToDate);
+
+  var totalEarnings = calculateTotalEarnings(hourlyRate, daysToDate);
+
+  // You can also chain methods onto new lines to keep code clean
+  var totalTdEl = $('<td>')
+    .addClass('p-2')
+    .text('$' + totalEarnings);
+
+  var deleteProjectBtn = $('<td>')
+    .addClass('p-2 delete-project-btn text-center')
+    .text('X');
+
+  // By listing each `<td>` variable as an argument, each one will be appended in that order
+  projectRowEl.append(
+    projectNameTdEl,
+    projectTypeTdEl,
+    rateTdEl,
+    dueDateTdEl,
+    daysLeftTdEl,
+    totalTdEl,
+    deleteProjectBtn
+  );
+
+  projectDisplayEl.append(projectRowEl);
+
+  projectModalEl.modal('hide');
+}
+
+function calculateTotalEarnings(rate, days) {
+  var dailyTotal = rate * 8;
+  var total = dailyTotal * days;
+  return total;
+}
+
+function handleDeleteProject(event) {
+  console.log(event.target);
+  var btnClicked = $(event.target);
+  btnClicked.parent('tr').remove();
+}
+
+// handle project form submission
+function handleProjectFormSubmit(event) {
   event.preventDefault();
 
-    var nameInput = nameInputEl.val();
-    var dateInput = typeInputEl.val();
-    var nameInput = rateInputEl.val();
-    var dateInput = dateInputEl.val();
-    var dateInput = untilInputEl.val();
+  var projectName = projectNameInputEl.val().trim();
+  var projectType = projectTypeInputEl.val().trim();
+  var hourlyRate = hourlyRateInputEl.val().trim();
+  var dueDate = dueDateInputEl.val().trim();
 
-  if (!nameInput || !typeInput || !rateInput || !dateInput || !untilInput) {
-    console.log('You need to fill out the form!');
-    return;
-  }
+  printProjectData(projectName, projectType, hourlyRate, dueDate);
 
-  printSkills(name, type, rate, date, until);
+  projectFormEl[0].reset();
+}
 
-  nameInputEl.val('');
-    typeInputEl.val('');
-    dateInput.val('');
-    dateInput.val('');
-    untilInputEl.val('');
-};
+projectFormEl.on('submit', handleProjectFormSubmit);
+projectDisplayEl.on('click', '.delete-project-btn', handleDeleteProject);
+dueDateInputEl.datepicker({ minDate: 1 });
 
-formEl.on('submit', handleFormSubmit);
-
-
+setInterval(displayTime, 1000);
